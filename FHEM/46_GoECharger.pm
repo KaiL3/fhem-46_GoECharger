@@ -240,7 +240,7 @@ sub get_subname_and_value($$$) {
 	
     my ( $arg, $index, $value) = @_;
 	
-	if( $arg  ==  "energy_sensors") { 
+	if( $arg  eq  "energy_sensors") { 
 		if( $index == 0 ) {	  return ($arg . "_L1_Volt", $value); }	# nrg[0]: Spannung auf L1 in Volt
 		elsif ($index == 1 ) { return ($arg . "_L2_Volt", $value); } # nrg[1]: Spannung auf L2 in Volt
 		elsif ($index == 2 ) { return ($arg . "_L3_Volt", $value); } # nrg[2]: Spannung auf L3 in Volt
@@ -850,6 +850,8 @@ sub GoECharger_WriteReadings($$$) {
 		$newreadingname=$goevar{$r};
 		$newreadingname=$r if ($newreadingname eq '');
 		$newreadingname = makeReadingName($newreadingname);
+		my %rkeys = map { $_, 1 } @reading_keys;
+		
 		if ($r eq 'eto'){
 			$v=sprintf("%.1f",$v/10);
 
@@ -894,15 +896,13 @@ sub GoECharger_WriteReadings($$$) {
 			$tmpv=sprintf("%.2f",$vtmp[11]/100*$kW_measured_corr_value);
 			readingsBulkUpdate($hash,$tmpr,$tmpv);
 			
-			#if( $rkeys{ $r } ){
+			if( $rkeys{ $r } ){
 				for my $i (0 .. $#vtmp) {
-					print "$i: $vtmp[$i]\n";
 					my ($name,$value) = get_subname_and_value($newreadingname, $i, $vtmp[$i]);
-					readingsBulkUpdateIfChanged($hash,$name,$value));
+					readingsBulkUpdateIfChanged($hash,$name,$value);
 				}
-				#
-				next;
-			#}
+			}
+			next;
 		}elsif($r eq 'ust'){
 			if ($v==0){
 				$tmpv='while_car_present';
@@ -915,7 +915,6 @@ sub GoECharger_WriteReadings($$$) {
 		}
 
 		# test if $r is known at @reading_keys and create reading ...
-		my %rkeys = map { $_, 1 } @reading_keys;
 		if( $rkeys{ $r } ){
 			readingsBulkUpdate($hash,$newreadingname,$v);
 		}
