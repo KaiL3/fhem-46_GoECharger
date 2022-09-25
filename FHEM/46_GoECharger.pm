@@ -236,7 +236,7 @@ $reading_keys_json=$reading_keys_json_default;
 
 }
 
-sub get_subname_and_value($) {
+sub get_subname_and_value($$$) {
 	
     my ( $arg, $index, $value) = @_;
 	
@@ -897,7 +897,7 @@ sub GoECharger_WriteReadings($$$) {
 			#if( $rkeys{ $r } ){
 				for my $i (0 .. $#vtmp) {
 					print "$i: $vtmp[$i]\n";
-					($name,$value) = get_subname_and_value($newreadingname, $i, $vtmp[$i]);
+					my ($name,$value) = get_subname_and_value($newreadingname, $i, $vtmp[$i]);
 					readingsBulkUpdateIfChanged($hash,$name,$value));
 				}
 				#
