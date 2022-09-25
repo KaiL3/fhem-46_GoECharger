@@ -29,7 +29,7 @@
 # 0.2.0 enhanced set commands
 # 0.2.1 changed help and attribute "used_api_keys" (default,all,minimal) 02.03.2021
 # 0.2.2 added new set command to restart the charger
-# 0.2.2 added better display for energie sensors
+# 0.2.3 added better display for energie sensors
 
 
 package main;
@@ -236,29 +236,29 @@ $reading_keys_json=$reading_keys_json_default;
 
 }
 
-sub get_subname_and_value($$$) {
+sub get_subname_and_value($) {
 	
     my ( $arg, $index, $value) = @_;
 	
 	if( $arg  ==  "energy_sensors") { 
 		if( $index == 0 ) {	  return ($arg . "_L1_Volt", $value); }	# nrg[0]: Spannung auf L1 in Volt
-		elsif $index == 1 ) { return ($arg . "_L2_Volt", $value); } # nrg[1]: Spannung auf L2 in Volt
-		elsif $index == 2 ) { return ($arg . "_L3_Volt", $value); } # nrg[2]: Spannung auf L3 in Volt
-		elsif $index == 3 ) { return ($arg . "_N_Volt", $value); } # nrg[3]: Spannung auf N in Volt
-		elsif $index == 4 ) { return ($arg . "_L1_Ampere", sprintf("%.1f",$value/10)); } # nrg[4]: Ampere auf L1 in 0.1A (123 entspricht 12,3A)
-		elsif $index == 5 ) { return ($arg . "_L2_Ampere", sprintf("%.1f",$value/10)); } # nrg[5]: Ampere auf L2 in 0.1A
-		elsif $index == 6 ) { return ($arg . "_L3_Ampere", sprintf("%.1f",$value/10)); } # nrg[6]: Ampere auf L3 in 0.1A
-		elsif $index == 7 ) { return ($arg . "_L1_KW", sprintf("%.1f",$value/10)); } # nrg[7]: Leistung auf L1 in 0.1kW (36 entspricht 3,6kW)
-		elsif $index == 8 ) { return ($arg . "_L2_KW", sprintf("%.1f",$value/10)); } # nrg[8]: Leistung auf L2 in 0.1kW
-		elsif $index == 9 ) { return ($arg . "_L3_KW", sprintf("%.1f",$value/10)); } # nrg[9]: Leistung auf L3 in 0.1kW
-		elsif $index == 10) { return ($arg . "_N_KW", sprintf("%.1f",$value/10)); } # nrg[10]: Leistung auf N in 0.1kW
-		elsif $index == 11) { return ($arg . "_KW", sprintf("%.1f",$value/100)); } # nrg[11]: Leistung gesamt  in 0.01kW (360 entspricht 3,6kW)
-		elsif $index == 12) { return ($arg . "_L1_CosPhi", $value); } # nrg[12]: Leistungsfaktor auf L1 in %
-		elsif $index == 13) { return ($arg . "_L2_CosPhi", $value); } # nrg[13]: Leistungsfaktor auf L2 in %
-		elsif $index == 14) { return ($arg . "_L3_CosPhi", $value); } # nrg[14]: Leistungsfaktor auf L3 in %
-		elsif $index == 15) { return ($arg . "_N_CosPhi", $value); }  # nrg[15]: Leistungsfaktor auf N in %				
+		elsif ($index == 1 ) { return ($arg . "_L2_Volt", $value); } # nrg[1]: Spannung auf L2 in Volt
+		elsif ($index == 2 ) { return ($arg . "_L3_Volt", $value); } # nrg[2]: Spannung auf L3 in Volt
+		elsif ($index == 3 ) { return ($arg . "_N_Volt", $value); } # nrg[3]: Spannung auf N in Volt
+		elsif ($index == 4 ) { return ($arg . "_L1_Ampere", sprintf("%.1f",$value/10)); } # nrg[4]: Ampere auf L1 in 0.1A (123 entspricht 12,3A)
+		elsif ($index == 5 ) { return ($arg . "_L2_Ampere", sprintf("%.1f",$value/10)); } # nrg[5]: Ampere auf L2 in 0.1A
+		elsif ($index == 6 ) { return ($arg . "_L3_Ampere", sprintf("%.1f",$value/10)); } # nrg[6]: Ampere auf L3 in 0.1A
+		elsif ($index == 7 ) { return ($arg . "_L1_KW", sprintf("%.1f",$value/10)); } # nrg[7]: Leistung auf L1 in 0.1kW (36 entspricht 3,6kW)
+		elsif ($index == 8 ) { return ($arg . "_L2_KW", sprintf("%.1f",$value/10)); } # nrg[8]: Leistung auf L2 in 0.1kW
+		elsif ($index == 9 ) { return ($arg . "_L3_KW", sprintf("%.1f",$value/10)); } # nrg[9]: Leistung auf L3 in 0.1kW
+		elsif ($index == 10) { return ($arg . "_N_KW", sprintf("%.1f",$value/10)); } # nrg[10]: Leistung auf N in 0.1kW
+		elsif ($index == 11) { return ($arg . "_KW", sprintf("%.1f",$value/100)); } # nrg[11]: Leistung gesamt  in 0.01kW (360 entspricht 3,6kW)
+		elsif ($index == 12) { return ($arg . "_L1_CosPhi", $value); } # nrg[12]: Leistungsfaktor auf L1 in %
+		elsif ($index == 13) { return ($arg . "_L2_CosPhi", $value); } # nrg[13]: Leistungsfaktor auf L2 in %
+		elsif ($index == 14) { return ($arg . "_L3_CosPhi", $value); } # nrg[14]: Leistungsfaktor auf L3 in %
+		elsif ($index == 15) { return ($arg . "_N_CosPhi", $value); }  # nrg[15]: Leistungsfaktor auf N in %				
 	} else { 
-		return ($arg . "[" . $index . "]", $value)
+		return ($arg . "[" . $index . "]", $value);
 	}
 }
 
