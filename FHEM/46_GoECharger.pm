@@ -38,6 +38,7 @@ my $missingModul = "";
 
 use strict;
 use warnings;
+use Switch;
 
 use HttpUtils;
 eval "use JSON;1" or $missingModul .= "JSON ";
@@ -241,7 +242,7 @@ sub get_subname_and_value($$$) {
     my ( $arg, $index, $value) = @_;
 	
 	switch($arg) {
-	   case ["energy_sensors"]  { 
+	   case "energy_sensors"  { 
 			switch($index) {
 				#R# array[15]  Array mit Werten des Strom- und Spannungssensors
 				case 0  { return ($arg . "_L1_Volt", $value); };	# nrg[0]: Spannung auf L1 in Volt
