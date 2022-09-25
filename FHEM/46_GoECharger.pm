@@ -229,12 +229,41 @@ sub GoECharger_API_V15($) {
 # Beispiel:  http://192.168.4.1/mqtt?payload=amp=16
 
 $reading_keys_json_all= join(' ', keys(%goevar));
-$reading_keys_json_default='adi afi aho alw ama amp amt ast car cbl cch cdi cfi cid dwo dws err eto lbr lch loa loe lof log lom lop lot lse tmp ust pha wak';
+$reading_keys_json_default='adi afi aho alw ama amp amt ast car cbl cch cdi cfi cid dwo dws err eto nrg lbr lch loa loe lof log lom lop lot lse tmp ust pha wak';
 $reading_keys_json_minimal='alw amp ast car dws err eto ust';
 $reading_keys_json=$reading_keys_json_default;
 
 }
 
+sub get_subname_and_value($$$) {
+	
+    my ( $arg, $index, $value) = @_;
+	
+	switch($arg) {
+	   case ["energy_sensors"]  { 
+			switch($index) {
+				#R# array[15]  Array mit Werten des Strom- und Spannungssensors
+				case 0  { return ($arg . "_L1_Volt", $value); };	# nrg[0]: Spannung auf L1 in Volt
+				case 1  { return ($arg . "_L2_Volt", $value); }; # nrg[1]: Spannung auf L2 in Volt
+				case 2  { return ($arg . "_L3_Volt", $value); }; # nrg[2]: Spannung auf L3 in Volt
+				case 3  { return ($arg . "_N_Volt", $value); }; # nrg[3]: Spannung auf N in Volt
+				case 4  { return ($arg . "_L1_Ampere", sprintf("%.1f",$value/10)); }; # nrg[4]: Ampere auf L1 in 0.1A (123 entspricht 12,3A)
+				case 5  { return ($arg . "_L2_Ampere", sprintf("%.1f",$value/10)); }; # nrg[5]: Ampere auf L2 in 0.1A
+				case 6  { return ($arg . "_L3_Ampere", sprintf("%.1f",$value/10)); }; # nrg[6]: Ampere auf L3 in 0.1A
+				case 7  { return ($arg . "_L1_KW", sprintf("%.1f",$value/10)); }; # nrg[7]: Leistung auf L1 in 0.1kW (36 entspricht 3,6kW)
+				case 8  { return ($arg . "_L2_KW", sprintf("%.1f",$value/10)); }; # nrg[8]: Leistung auf L2 in 0.1kW
+				case 9  { return ($arg . "_L3_KW", sprintf("%.1f",$value/10)); }; # nrg[9]: Leistung auf L3 in 0.1kW
+				case 10 { return ($arg . "_N_KW", sprintf("%.1f",$value/10)); }; # nrg[10]: Leistung auf N in 0.1kW
+				case 11 { return ($arg . "_KW", sprintf("%.1f",$value/100)); }; # nrg[11]: Leistung gesamt  in 0.01kW (360 entspricht 3,6kW)
+				case 12 { return ($arg . "_L1_CosPhi", $value); }; # nrg[12]: Leistungsfaktor auf L1 in %
+				case 13 { return ($arg . "_L2_CosPhi", $value); }; # nrg[13]: Leistungsfaktor auf L2 in %
+				case 14 { return ($arg . "_L3_CosPhi", $value); }; # nrg[14]: Leistungsfaktor auf L3 in %
+				case 15 { return ($arg . "_N_CosPhi", $value); }; # nrg[15]: Leistungsfaktor auf N in %				
+			};
+		};
+	   else { return ($arg . "[" . $index . "]", $value) };
+	}
+}
 
 # Declare functions
 sub GoECharger_Attr(@);
@@ -867,7 +896,16 @@ sub GoECharger_WriteReadings($$$) {
 			$tmpr='KW_charging_measured';
 			$tmpv=sprintf("%.2f",$vtmp[11]/100*$kW_measured_corr_value);
 			readingsBulkUpdate($hash,$tmpr,$tmpv);
-
+			
+			#if( $rkeys{ $r } ){
+				for my $i (0 .. $#vtmp) {
+					print "$i: $vtmp[$i]\n";
+					($name,$value) = get_subname_and_value($newreadingname, $i, $vtmp[$i]);
+					readingsBulkUpdateIfChanged($hash,$name,$value));
+				}
+				#
+				next;
+			#}
 		}elsif($r eq 'ust'){
 			if ($v==0){
 				$tmpv='while_car_present';
